@@ -23,7 +23,10 @@ def extract_tables_from_text(text_page):
     table = []
     for line in lines:
         if line.strip():
-            table.append(line.split())
+            row = line.split()
+            if table and len(row) != len(table[0]):
+                continue  # 跳过列数不匹配的行
+            table.append(row)
         else:
             if table:
                 tables.append(table)
@@ -35,8 +38,9 @@ def extract_tables_from_text(text_page):
 def convert_tables_to_json(tables):
     json_data = []
     for table in tables:
-        df = pd.DataFrame(table[1:], columns=table[0])
-        json_data.append(df.to_dict(orient='records'))
+        if len(table) > 1:  # 确保表格至少有两行（表头和一行数据）
+            df = pd.DataFrame(table[1:], columns=table[0])
+            json_data.append(df.to_dict(orient='records'))
     return json.dumps(json_data, ensure_ascii=False, indent=4)
 
 def main(pdf_path):
