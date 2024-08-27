@@ -45,6 +45,7 @@ def convert_tables_to_json(tables):
 
 def main(pdf_path):
     tables = extract_tables_from_pdf(pdf_path)
+    print(tables)
     json_data = convert_tables_to_json(tables)
     print(json_data)
 
